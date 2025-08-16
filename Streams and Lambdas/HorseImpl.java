@@ -42,32 +42,32 @@ public class HorseImpl implements HorseInterface {
 	@Override
 	public void loadNameToHorses(Horse[] horses) {
 		Map<String, Integer> uniqueNames = new HashMap<>();
-		IntStream.range(0, horses.length)
-				 .forEach(i -> {
+		Arrays.stream(horses)
+				 .forEach(horse -> {
 				 	int randomIndex = random.nextInt(HORSE_NAMES.length);
 				 	String horseName = HORSE_NAMES[randomIndex];
 				 	int counter = uniqueNames.getOrDefault(horseName, 0) + 1;
 
 				 	uniqueNames.put(horseName, counter);
 				 	String finalName = counter == 1 ? horseName : horseName + counter;
-				 	horses[i].setName(finalName);
+				 	horse.setName(finalName);
 				 });
 	}
 
 	@Override
 	public void loadWarcryToHorses(Horse[] horses) {
-		IntStream.range(0, horses.length)
-				 .forEach(i -> {
+		Arrays.stream(horses)
+				 .forEach(horse -> {
 				 	int randomIndex = random.nextInt(HORSE_WARCRIES.length);
 				 	String horseWarcry = HORSE_WARCRIES[randomIndex];
 
 				 	Optional.ofNullable(horseWarcry)
 				 			.ifPresentOrElse(
 				 				warcry -> {
-				 					horses[i].setWarcry(warcry);
+				 					horse.setWarcry(warcry);
 				 				},
 				 				() -> {
-				 					horses[i].setWarcry("No warcry");
+				 					horse.setWarcry("No warcry");
 				 				}
 				 			);
 				 });
@@ -75,19 +75,19 @@ public class HorseImpl implements HorseInterface {
 
 	@Override
 	public void loadAgeToHorses(Horse[] horses) {
-		IntStream.range(0, horses.length)
-				 .forEach(i -> {
+		Arrays.stream(horses)
+				 .forEach(horse -> {
 				 	int randomAge = random.nextInt(8) + 5;
-				 	horses[i].setAge(randomAge);
+				 	horse.setAge(randomAge);
 				 });
 	}
 
 	@Override
 	public void loadConditionToHorses(Horse[] horses) {
-		IntStream.range(0, horses.length)
-				 .forEach(i -> {
+		Arrays.stream(horses)
+				 .forEach(horse -> {
 				  	boolean isHealthy = random.nextBoolean();
-                 	horses[i].setHealthy(isHealthy);
+                 	horse.setHealthy(isHealthy);
 				 });
 	}
 
@@ -100,9 +100,7 @@ public class HorseImpl implements HorseInterface {
 				 	System.out.println("Warcry: " + horses[i].getWarcry());
 				 	System.out.println("Age: " + horses[i].getAge());
 				 	System.out.println("Condition: " + (horses[i].isHealthy() ? "Healthy" : "Not healthy"));
-				 	System.out.println("Group: " + horses[i].getGroup());
 				 	System.out.println("");
-
 				 });
 	}
 
@@ -138,8 +136,6 @@ public class HorseImpl implements HorseInterface {
 			  		horse.getAge() >= averageAge ? "intermediate" : "beginner"
 			  	);
 			  });
-
 	}
-
 
 }

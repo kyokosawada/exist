@@ -26,7 +26,8 @@ public class Horse {
 		return this.group;
 	}
 
-	public void setName(String name) {
+
+    public void setName(String name) {
 		this.name = name;
 	}
 
@@ -45,6 +46,7 @@ public class Horse {
 	public void setGroup(String group) {
 		this.group = group;
 	}
+
 	
 
 }
