@@ -1000,7 +1000,6 @@ interface Calculator {
 ### 2.2 Built-in Functional Interfaces
 
 **java.util.function Package**:
-
 #### 2.2.1 Predicate&lt;T&gt;
 
 ```java
@@ -3421,3 +3420,131 @@ Remember: **Confidence comes from deep understanding, not memorization.**
 ## You've Got This! 🚀💪
 
 Good luck with your checkpoint interview!
+
+---
+
+# All Java Streams and Lambdas Cheat Sheets
+
+## Built-in Functional Interfaces Cheat Sheet 📝
+
+| Interface           | Method Signature    | What it does                              | Example use (lambda)         |
+|---------------------|---------------------|-------------------------------------------|------------------------------|
+| `Predicate<T>`      | `boolean test(T t)` | Checks if something is true/false         | `s -> s.isEmpty()`           |
+| `Function<T, R>`    | `R apply(T t)`      | Converts one type to another              | `s -> s.length()`            |
+| `Consumer<T>`       | `void accept(T t)`  | Does something with input, no return      | `s -> System.out.println(s)` |
+| `Supplier<T>`       | `T get()`           | Gives a value, no input                   | `() -> 42`                   |
+| `BiFunction<T,U,R>` | `R apply(T t, U u)` | Combines two things, returns a result     | `(a, b) -> a + b`            |
+| `UnaryOperator<T>`  | `T apply(T t)`      | Like Function, but input/output same type | `x -> x.toUpperCase()`       |
+| `BinaryOperator<T>` | `T apply(T t, T u)` | Like BiFunction, both inputs/results same | `(a, b) -> a * b`            |
+
+**How to use?**
+
+- These are the main building blocks of lambdas and streams in Java.
+- Use them for filtering (`Predicate`), transforming (`Function`), acting (`Consumer`), generating (`Supplier`),
+  combining (`BiFunction`, `BinaryOperator`), or processing data in Java collections/streams.
+
+---
+
+## Streams: Quick & Simple Answers
+
+**What is a stream?**
+
+- A stream is a pipeline for processing a sequence of data (like a list or array), where you can filter, map, and
+  collect results _without changing the original data_.
+- You describe _what_ to do, not _how_ to do it.
+
+**Can you use a stream twice?**
+
+- ❌ No. Each stream can be used only once. After a terminal operation (like `.forEach()` or `.collect()`), the stream is
+  closed forever. Start a new stream to process the data again.
+
+**Why use streams?**
+
+- Makes your code more readable, concise, and easy to chain together multiple operations.
+- Great for functional programming style—avoids loops and mutation.
+- Built-in ways to filter, map, sort, collect, group, and more!
+
+**Example:**
+
+```java
+// Filter, map, collect all in one line (without touching original data)
+List<String> results = list.stream()
+    .filter(s -> s.length() > 3)
+    .map(String::toUpperCase)
+    .collect(Collectors.toList());
+```
+
+## Streams: Lazy vs Eager Operations
+
+**Lazy (Intermediate) Operations:**
+
+- Build the pipeline, don't produce results by themselves (run only when a terminal operation happens)
+
+| Operation | What it does                  | Example usage                        |
+|-----------|-------------------------------|--------------------------------------|
+| filter    | Keep elements that match rule | `.filter(x -> x > 0)`                |
+| map       | Transform each item           | `.map(s -> s.length())`              |
+| flatMap   | Flatten nested structures     | `.flatMap(list -> list.stream())`    |
+| distinct  | Remove duplicates             | `.distinct()`                        |
+| sorted    | Sort the stream               | `.sorted()` or `.sorted(Comparator)` |
+| limit     | Take first N elements         | `.limit(5)`                          |
+| skip      | Skip first N elements         | `.skip(2)`                           |
+| peek      | See items in pipeline (debug) | `.peek(x -> System.out.println(x))`  |
+
+**Eager (Terminal) Operations:**
+
+- Actually process the data and close the stream
+
+| Operation | What it does                     | Example usage                   |
+|-----------|----------------------------------|---------------------------------|
+| forEach   | Run an action for each element   | `.forEach(System.out::println)` |
+| collect   | Gather results into a collection | `.collect(Collectors.toList())` |
+| reduce    | Combine all to one value         | `.reduce((a, b) -> a + b)`      |
+| findFirst | Get the first item (if any)      | `.findFirst()`                  |
+| findAny   | Get any item (can be non-first)  | `.findAny()`                    |
+| anyMatch  | Any element matches? (boolean)   | `.anyMatch(x -> x > 0)`         |
+| allMatch  | All elements match?              | `.allMatch(x -> x != null)`     |
+| noneMatch | No elements match?               | `.noneMatch(String::isEmpty)`   |
+| count     | Number of elements               | `.count()`                      |
+
+**Cheat sheet tip:**
+
+- Lazy operations build up what you want to do; only eager ops actually run it!
+
+## Fork/Join: Quick & Simple
+
+- **What is it?** The Fork/Join framework is a system Java uses to break big jobs into smaller chunks that can be
+  processed in parallel, then combines the results.
+- **Where is it used?** Every time you use a `.parallelStream()`, Java uses Fork/Join under the hood to do the work on
+  multiple threads/cores.
+- **Why important?** It’s why parallel streams are able to automatically split the work across many CPU cores, making
+  data processing much faster for big or heavy computations.
+
+**Analogy:**
+
+- Fork = split up a big task for many hands
+- Join = gather everyone’s results at the end
+
+**Key points:**
+
+- You don’t use Fork/Join directly for streams—it’s the engine working for you when you write `parallelStream()`
+- You get faster processing for big tasks, but only if your problem is a good fit for parallelism!
+- Don’t use parallel streams for tiny tasks or when order or side-effects are important
+
+---
+
+## Parallel Stream Order: Quick Facts
+
+- **forEach()** on a parallel stream outputs elements in unpredictable (any) order.
+- **forEachOrdered()** on a parallel stream preserves the order of the original list/array, but may be slightly slower.
+
+**Example:**
+
+```java
+list.parallelStream().forEach(System.out::println); // random order!
+list.parallelStream().forEachOrdered(System.out::println); // maintains order!
+```
+
+**Remember:**
+
+- Use forEach for performance, use forEachOrdered when order matters!
