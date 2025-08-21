@@ -3,8 +3,7 @@ import java.io.IOException;
 
 public class MenuService {
 
-    private TableService tableService = new TableService();
-    private Scanner scanner = new Scanner(System.in);
+    private TableInterface tableService = new TableImpl();
 
     public void startApplication(String fileName) {
         try {
@@ -28,7 +27,7 @@ public class MenuService {
             System.out.println("[ sort ] - Sort");
             System.out.println("[ reset ] - Reset");
             System.out.println("[ x ] - Exit");
-            String choice = getUserInput("Choose an action: ");
+            String choice = ScanUtils.getUserInput("Choose an action: ");
 
             switch (choice.toLowerCase()) {
                 case "search" -> handleSearch();
@@ -41,12 +40,10 @@ public class MenuService {
                 default -> System.out.println("Invalid action. Please try again.");
             }
         }
-
-        scanner.close();
     }
     
     private void handleSearch() {
-        String searchTerm = getUserInput("Enter search term: ");
+        String searchTerm = ScanUtils.getUserInput("Enter search term: ");
 
         if (searchTerm.trim().isEmpty()) {
             System.out.println("Search term cannot be empty. Please enter a valid search term.");
@@ -58,7 +55,7 @@ public class MenuService {
 
     private void handleEdit() {
         try {
-            String position = getUserInput("Enter cell position [row,column]: ");
+            String position = ScanUtils.getUserInput("Enter cell position [row,column]: ");
 
             if (!position.matches("\\d+,\\d+")) {
                 System.out.println("Invalid format.");
@@ -80,21 +77,21 @@ public class MenuService {
                 return;
             }
 
-            String editMode = getUserInput("Edit key, value or both? [key/value/both]: ");
+            String editMode = ScanUtils.getUserInput("Edit key, value or both? [key/value/both]: ");
 
             String newKey = "";
             String newValue = "";
 
             switch (editMode.toLowerCase()) {
                 case "key":
-                    newKey = getUserInput("Enter new key: ");
+                    newKey = ScanUtils.getUserInput("Enter new key: ");
                     break;
                 case "value":
-                    newValue = getUserInput("Enter new value: ");
+                    newValue = ScanUtils.getUserInput("Enter new value: ");
                     break;
                 case "both":
-                    newKey = getUserInput("Enter new key: ");
-                    newValue = getUserInput("Enter new value: ");
+                    newKey = ScanUtils.getUserInput("Enter new key: ");
+                    newValue = ScanUtils.getUserInput("Enter new value: ");
                     break;
                 default:
                     System.out.println("Invalid edit mode. Please use 'key', 'value', or 'both'");
@@ -116,7 +113,7 @@ public class MenuService {
 
     private void handleAddRow() {
         try {
-            String input = getUserInput("Number of cells to add: ");
+            String input = ScanUtils.getUserInput("Number of cells to add: ");
             int numberOfCells = Integer.parseInt(input);
 
             if (numberOfCells <= 0) {
@@ -135,7 +132,7 @@ public class MenuService {
 
     private void handleSort() {
         try {
-            String input = getUserInput("Enter row to sort: ");
+            String input = ScanUtils.getUserInput("Enter row to sort: ");
             int rowIndex = Integer.parseInt(input);
 
             if (rowIndex < 0 || rowIndex >= tableService.getTable().size()) {
@@ -143,7 +140,7 @@ public class MenuService {
                 return;
             }
 
-            String order = getUserInput("Sort order [asc/desc]: ");
+            String order = ScanUtils.getUserInput("Sort order [asc/desc]: ");
 
             if (!order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
                 System.out.println("Invalid order.");
@@ -161,7 +158,7 @@ public class MenuService {
 
     private void handleReset() {
         try {
-            String dimensions = getUserInput("Enter table dimensions [ROWSxCOLUMNS]: ");
+            String dimensions = ScanUtils.getUserInput("Enter table dimensions [ROWSxCOLUMNS]: ");
 
             if (!dimensions.matches("\\d+x\\d+")) {
                 System.out.println("Invalid format.");
@@ -185,11 +182,6 @@ public class MenuService {
         } catch (IOException e) {
             System.out.println("Error saving: " + e.getMessage());
         }
-    }
-
-    private String getUserInput(String input) {
-        System.out.print(input);
-        return scanner.nextLine().trim();
     }
     
 }
